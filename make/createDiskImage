@@ -128,7 +128,12 @@ copyDirs()
             printErrorAndExit "Unable to find $COPYDIR"
         fi
 
-        find . -print | while read FILEORDIR
+        # Skips dotfiles like .DS_Store, ._* AppleDouble files and things like .gitkeep
+        # These files can break the build with an error:
+        # > Invalid ProDOS name of file .DS_Store.
+        # ProDOS names must be 1 to 15 characters, start with a letter and only letters, 
+        # numbers and a period can be used in the name.
+        find . ! -name '.*' -print | while read FILEORDIR
         do
             if [ "$FILEORDIR" = "." ]
             then
