@@ -72,6 +72,16 @@ done < $PROJECTS
 
 rm -f $PROJECTS
 
+# Building a new package will fail locally if we can't sign it
+# This allows us to update the local XCode templates, and skip building the package 
+if [ "$1" = "install" ]
+then
+    pkg/scripts/preinstall
+    cp -R $TMPDIR/* "$HOME/Library/Developer/Xcode/"
+    rm -rf $TMPDIR
+    exit 0
+fi
+
 pkgbuild --root $TMPDIR --version 3.2 --identifier com.halcyontouch.Apple2gsTemplate.pkg --install-location /tmp/com.halcyontouch.Apple2gsTemplate.pkg/ --scripts pkg/scripts/ Apple2GSXcodeTemplate.pkg
 productbuild --distribution pkg/Distribution.xml --resource ./pkg temp.pkg
 rm Apple2GSXcodeTemplate.pkg
